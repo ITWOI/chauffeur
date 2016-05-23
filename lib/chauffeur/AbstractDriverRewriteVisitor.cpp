@@ -49,12 +49,12 @@ namespace chauffeur
     string file = FileName;
     file.append(".re.c");
 
-    string error_msg;
+    std::error_code error_msg;
     llvm::raw_fd_ostream *fos = new llvm::raw_fd_ostream(file.c_str(), error_msg, llvm::sys::fs::F_None);
-    if (!error_msg.empty())
+    if (!error_msg)
     {
       if (llvm::errs().has_colors()) llvm::errs().changeColor(llvm::raw_ostream::RED);
-      llvm::errs() << "error: " << error_msg << "\n";
+      llvm::errs() << "error: " << error_msg.message() << "\n";
       if (llvm::errs().has_colors()) llvm::errs().resetColor();
       exit(1);
     }

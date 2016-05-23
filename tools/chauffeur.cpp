@@ -36,17 +36,17 @@ namespace chauffeur
   class ParseDriverASTAction : public ASTFrontendAction
   {
   public:
-      virtual ASTConsumer *CreateASTConsumer(CompilerInstance &CI, StringRef file)
+      virtual std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI, StringRef file)
       {
         if (ASTList)
           return clang::CreateASTDeclNodeLister();
         if (ASTDump)
-          return clang::CreateASTDumper(ASTDumpFilter);
+          return clang::CreateASTDumper(ASTDumpFilter, false, false);
         if (ASTPrint)
           return clang::CreateASTPrinter(&llvm::outs(), ASTDumpFilter);
         if (ASTInline)
           llvm::errs() << "test" << "\n";
-        return new ParseDriverConsumer(&CI, ASTInline);
+        return std::unique_ptr<ASTConsumer>(new ParseDriverConsumer(&CI, ASTInline));
       }
   };
 }
